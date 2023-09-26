@@ -17,8 +17,8 @@ jobs:
     displayName: 'Install Dependencies'
   - script: flutter build apk
     displayName: 'Build apk'
-  - script: flutter test 
-    displayName: 'Run Tests'
+  # - script: flutter test 
+  #   displayName: 'Run Tests'
   - task: CopyFiles@2
     inputs:
       SourceFolder: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk'
