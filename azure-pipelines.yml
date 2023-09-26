@@ -1,0 +1,76 @@
+trigger:
+- none
+
+jobs:
+- job: BuildAndTest
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - checkout: self
+  - script: |
+      sudo apt-get update -y
+      sudo snap install flutter --classic
+    displayName: 'Install Flutter'
+  - script: |
+      flutter --disable-telemetry
+      flutter packages get
+    displayName: 'Install Dependencies'
+  - script: flutter build apk
+    displayName: 'Build apk'
+  - script: flutter test 
+    displayName: 'Run Tests'
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk'
+      Contents: '**/*.apk'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Copy APK to Artifact Staging'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'apk'
+      publishLocation: 'Container'
+    displayName: 'Publish Artifacts'
+
+
+#       sourceFolder: './build/web'  # Change this to the path where your web files are generated
+#       contents: '**/*'
+#       targetFolder: '$(Build.ArtifactStagingDirectory)/web'
+#     displayName: 'Copy Files to Artifact Staging'
+
+#   # Publish the build artifacts
+#   - task: PublishBuildArtifacts@1
+#     inputs:
+#       PathtoPublish: '$(Build.ArtifactStagingDirectory)/web'
+#       ArtifactName: 'web'
+#       publishLocation: 'Container'
+#     displayName: 'Publish Artifacts'
+
+#   - task: SSH@0
+#     inputs:
+#       sshEndpoint: 'mytest'  # Replace with your SSH service connection name
+#       runOptions: 'inline'
+#       inline: sudo rm -rf /home/azure/web && sudo rm -rf /var/www/html/web 
+
+#   - task: CopyFilesOverSSH@0
+#     inputs:
+#       sshEndpoint: 'mytest'
+#       sourceFolder: '$(Build.ArtifactStagingDirectory)'
+#       # contents: 'web'
+#       targetFolder: '/home/azure/'
+
+#   - task: SSH@0
+#     inputs:
+#       sshEndpoint: 'mytest'  # Replace with your SSH service connection name
+#       runOptions: 'inline'
+#       inline: 'sudo mv /home/azure/web /var/www/html/web && sudo systemctl restart nginx'
+
+# - job: RuntimeTest
+#   dependsOn: BuildAndTest
+#   steps:
+#   - script: |
+#       python -m pip install requests
+#       python -m pip install selenium
+#       python runtime_test.py
+
+#     displayName: 'Run Runtime Test'
