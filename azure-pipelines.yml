@@ -33,44 +33,67 @@ jobs:
     displayName: 'Publish Artifacts'
 
 
-#       sourceFolder: './build/web'  # Change this to the path where your web files are generated
-#       contents: '**/*'
-#       targetFolder: '$(Build.ArtifactStagingDirectory)/web'
-#     displayName: 'Copy Files to Artifact Staging'
+  - script: |
+      sudo apt-get update -y
+      sudo apt-get install ca-certificates -y
+      sudo apt-get install cpu-checker
+      egrep -c '(vmx|svm)' /proc/cpuinfo
+      kvm-ok
+      
+      sudo apt-get install openjdk-8-jdk -y
+      export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+      echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+      export PATH=$JAVA_HOME/bin:$PATH
+      echo "PATH=$PATH" >> $GITHUB_ENV
 
-#   # Publish the build artifacts
-#   - task: PublishBuildArtifacts@1
-#     inputs:
-#       PathtoPublish: '$(Build.ArtifactStagingDirectory)/web'
-#       ArtifactName: 'web'
-#       publishLocation: 'Container'
-#     displayName: 'Publish Artifacts'
+      sudo apt install wget -y
+      wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
+      unzip sdk-tools-linux-3859397.zip -d android-sdk
+      mkdir -p platform-tools
+      wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+      unzip platform-tools-latest-linux.zip -d platform-tools
 
-#   - task: SSH@0
-#     inputs:
-#       sshEndpoint: 'mytest'  # Replace with your SSH service connection name
-#       runOptions: 'inline'
-#       inline: sudo rm -rf /home/azure/web && sudo rm -rf /var/www/html/web 
+      sudo mv platform-tools/* android-sdk/
 
-#   - task: CopyFilesOverSSH@0
-#     inputs:
-#       sshEndpoint: 'mytest'
-#       sourceFolder: '$(Build.ArtifactStagingDirectory)'
-#       # contents: 'web'
-#       targetFolder: '/home/azure/'
+      export ANDROID_HOME=$PWD/android-sdk
+      export PATH=$PATH:$ANDROID_HOME/tools
+      export PATH=$PATH:$HOME/platform-tools
 
-#   - task: SSH@0
-#     inputs:
-#       sshEndpoint: 'mytest'  # Replace with your SSH service connection name
-#       runOptions: 'inline'
-#       inline: 'sudo mv /home/azure/web /var/www/html/web && sudo systemctl restart nginx'
+      yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+      $ANDROID_HOME/tools/bin/sdkmanager --list
+      $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-31"
 
-# - job: RuntimeTest
-#   dependsOn: BuildAndTest
-#   steps:
-#   - script: |
-#       python -m pip install requests
-#       python -m pip install selenium
-#       python runtime_test.py
+      # Replace 'system-images;android-30;google_apis;x86' with the correct package name
+      $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-31;google_apis;x86_64"
+      export ANDROID_SDK_ROOT=$ANDROID_HOME
 
-#     displayName: 'Run Runtime Test'
+      # List available AVDs
+      $ANDROID_HOME/tools/bin/avdmanager list avd
+
+      $ANDROID_HOME/tools/emulator -list-avds
+
+      # Create an Android Virtual Device (AVD)
+      echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --name "mytempavd" --package "system-images;android-31;google_apis;x86_64" --tag "google_apis" --force
+
+      $ANDROID_HOME/tools/bin/sdkmanager --list
+
+      # Start the Android emulator in the background and log the output
+      # $ANDROID_HOME/emulator/emulator -avd "mytempavd" -no-audio -no-window -logcat /tmp/emulator.log &
+      $ANDROID_HOME/emulator/emulator -avd mytempavd 
+
+      # Wait for a short time (e.g., 5 minutes) to allow the emulator to start (you can adjust this duration)
+      sleep 150
+    
+
+      # Check if the emulator is running
+      # if $ANDROID_HOME/platform-tools/adb devices | grep -q emulator; then
+      #   echo "Emulator is running."
+      # else
+      #   echo "Emulator is not running."
+      # fi
+
+      # List connected devices
+      # $ANDROID_HOME/platform-tools/adb devices 
+      $ANDROID_HOME/tools/emulator -list-avds
+      
+    displayName: 'Install Android SDK and Run Emulator'
