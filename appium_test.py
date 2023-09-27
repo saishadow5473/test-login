@@ -1,4 +1,4 @@
-from appium import webdriver
+from appium.webdriver import Remote
 from time import sleep
 
 # Desired capabilities for the Flutter app
