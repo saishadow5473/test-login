@@ -1,3 +1,4 @@
+import time
 from appium import webdriver
 from time import sleep
 
@@ -5,7 +6,7 @@ from time import sleep
 desired_caps = {
     'platformName': 'Android',
     'deviceName': 'mytempavd',
-    'app': 'build/app/outputs/flutter-apk/app-release.apk',
+    'app': '/home/vsts/work/1/s/build/app/outputs/flutter-apk/app-release.apk'
 }
 
 # Initialize the Appium driver
