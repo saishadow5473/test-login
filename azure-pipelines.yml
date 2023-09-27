@@ -116,6 +116,7 @@ jobs:
 
       # Install Appium-Python-Client
       python -m pip install Appium-Python-Client
+      pip install selenium
 
       # Run your Appium test script
       python appium_test.py --port 4725
