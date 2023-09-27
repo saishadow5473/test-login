@@ -15,7 +15,7 @@ desired_caps = {
 server_url = "http://127.0.0.1:4723/wd/hub"
 
 # Initialize the Appium driver with desired capabilities
-driver = webdriver.Remote(server_url, desired_capabilities=desired_caps)
+driver = webdriver.Remote(server_url, desired_caps)
 
 # Wait for the app to launch
 sleep(5)
