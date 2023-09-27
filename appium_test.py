@@ -1,35 +1,45 @@
-import time
 from appium import webdriver
+from appium.webdriver.common.touch_action import TouchAction
+from time import sleep
 
-# Desired capabilities for your Flutter app
+# Desired capabilities for the Flutter app
 desired_caps = {
     'platformName': 'Android',
-    'deviceName': 'mytempavd',
-    'app': '/home/vsts/work/1/s/build/app/outputs/flutter-apk/app-release.apk',
+    'deviceName': 'mytempavd',  # Replace with your target device name
+    'app': 'build/app/outputs/flutter-apk/app-release.apk',  # Replace with the path to your app APK file
+    'automationName': 'UiAutomator2'
 }
 
+# Appium server URL
+server_url = "http://127.0.0.1:4723/wd/hub"
+
 # Initialize the Appium driver
-driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
+driver = webdriver.Remote(server_url, desired_caps)
 
-# Define a function to perform login
-def perform_login(email, password):
-    # Wait for the email input field to be visible and interact with it
-    driver.find_element_by_accessibility_id('email_input_id').send_keys(email)
+# Wait for the app to launch
+sleep(5)
 
-    # Wait for the password input field to be visible and interact with it
-    driver.find_element_by_accessibility_id('password_input_id').send_keys(password)
+# Find the email and password text fields
+email_field = driver.find_element_by_id("emailController")
+password_field = driver.find_element_by_id("passwordController")
 
-    # Wait for the Submit button to be clickable and click it
-    driver.find_element_by_accessibility_id('submit_button_id').click()
+# Enter the login credentials
+email_field.send_keys("arun@gogosoon.com")
+password_field.send_keys("qazxswedcvfr")
 
-# Test login functionality
-try:
-    # Replace 'your_email' and 'your_password' with actual login credentials
-    perform_login('arun@gogosoon.com', 'qazxswedcvfr')
+# Perform the login action
+submit_button = driver.find_element_by_id("submitButton")
+submit_button.click()
 
-    # Wait for a few seconds to see the result
-    time.sleep(5)
+# Wait for the login process to complete
+sleep(5)
 
-finally:
-    # Close the app and end the Appium session
-    driver.quit()
+# Verify if the login was successful
+welcome_text = driver.find_element_by_id("emailText").text
+if welcome_text == "Welcome, arun@gogosoon.com!":
+    print("Login Successful!")
+else:
+    print("Login Failed!")
+
+# Close the app
+driver.quit()
