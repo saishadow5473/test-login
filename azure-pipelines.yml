@@ -93,31 +93,35 @@ jobs:
     displayName: 'Install Android SDK and Run Emulator'
 
   - script: |
-      # Install Node.js (if not already installed)
-      sudo apt-get install -y nodejs
+  #     # Install Node.js (if not already installed)
+  #     sudo apt-get install -y nodejs
 
-      # Install Appium globally
-      npm install -g appium
-      appium --port 4725 &
-      # Install the uiautomator2 driver
-      appium driver install uiautomator2
-      # Specify the Appium driver to use (uiautomator2)
-      # appium --use-driver=uiautomator2
-      npm update -g appium
-      npm update -g appium-uiautomator2-driver
+  #     # Install Appium globally
+  #     npm install -g appium
+  #     appium --port 4725 &
+  #     # Install the uiautomator2 driver
+  #     appium driver install uiautomator2
+  #     # Specify the Appium driver to use (uiautomator2)
+  #     # appium --use-driver=uiautomator2
+  #     npm update -g appium
+  #     npm update -g appium-uiautomator2-driver
 
-      # # Start the Appium server in the background
-      # appium &
-    displayName: 'Install and Start Appium Server'
+  #     # # Start the Appium server in the background
+  #     # appium &
+  #   displayName: 'Install and Start Appium Server'
 
+  # - script: |
+  #     # Navigate to your Appium test script directory
+  #     cd $(Build.SourcesDirectory)
+
+  #     # Install Appium-Python-Client
+  #     python -m pip install Appium-Python-Client
+  #     pip install selenium
+
+  #     # Run your Appium test script
+  #     python appium_test.py --port 4725
+  #   displayName: 'Run Appium Tests'
   - script: |
-      # Navigate to your Appium test script directory
-      cd $(Build.SourcesDirectory)
+      pip install Appium-Python-Client
 
-      # Install Appium-Python-Client
-      python -m pip install Appium-Python-Client
-      pip install selenium
 
-      # Run your Appium test script
-      python appium_test.py --port 4725
-    displayName: 'Run Appium Tests'
