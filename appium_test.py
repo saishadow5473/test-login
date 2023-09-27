@@ -1,6 +1,8 @@
 import time
 from appium import webdriver
-from time import sleep
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 # Desired capabilities for your Flutter app
 desired_caps = {
@@ -14,16 +16,22 @@ driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
 
 # Define a function to perform login
 def perform_login(email, password):
-    # Locate and interact with the email input field using its ID
-    email_input = driver.find_element_by_id('email_input_id')
+    # Wait for the email input field to be visible
+    email_input = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ACCESSIBILITY_ID, 'email_input_id'))
+    )
     email_input.send_keys(email)
 
-    # Locate and interact with the password input field using its ID
-    password_input = driver.find_element_by_id('password_input_id')
+    # Wait for the password input field to be visible
+    password_input = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ACCESSIBILITY_ID, 'password_input_id'))
+    )
     password_input.send_keys(password)
 
-    # Locate and click the Submit button using its ID
-    submit_button = driver.find_element_by_id('submit_button_id')
+    # Wait for the Submit button to be clickable
+    submit_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ACCESSIBILITY_ID, 'submit_button_id'))
+    )
     submit_button.click()
 
 # Test login functionality
@@ -32,7 +40,7 @@ try:
     perform_login('arun@gogosoon.com', 'qazxswedcvfr')
 
     # Wait for a few seconds to see the result
-    sleep(5)
+    time.sleep(5)
 
 finally:
     # Close the app and end the Appium session
