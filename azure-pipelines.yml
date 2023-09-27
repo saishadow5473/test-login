@@ -110,13 +110,13 @@ jobs:
       # appium &
     displayName: 'Install and Start Appium Server'
 
-  # - script: |
-  #     # Navigate to your Appium test script directory
-  #     cd $(Build.SourcesDirectory)
+  - script: |
+      # Navigate to your Appium test script directory
+      cd $(Build.SourcesDirectory)
 
-  #     # Install Appium-Python-Client
-  #     python -m pip install Appium-Python-Client
+      # Install Appium-Python-Client
+      python -m pip install Appium-Python-Client
 
-  #     # Run your Appium test script
-  #     python appium_test.py --port 4725
-  #   displayName: 'Run Appium Tests'
+      # Run your Appium test script
+      python appium_test.py --port 4725
+    displayName: 'Run Appium Tests'
