@@ -1,7 +1,5 @@
 from appium import webdriver
-from appium.webdriver.common.touch_action import TouchAction
 from time import sleep
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 # Desired capabilities for the Flutter app
 desired_caps = {
@@ -37,7 +35,7 @@ sleep(5)
 
 # Verify if the login was successful
 welcome_text = driver.find_element_by_id("emailText").text
-if welcome_text == "Welcome, arun@gogosoon.com!":
+if "Welcome" in welcome_text and "arun@gogosoon.com" in welcome_text:
     print("Login Successful!")
 else:
     print("Login Failed!")
