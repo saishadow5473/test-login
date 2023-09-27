@@ -6,7 +6,7 @@ desired_caps = {
     'platformName': 'Android',
     'deviceName': 'mytempavd',  # Replace with your target device name
     # 'app': '/home/vsts/work/1/s/build/app/outputs/flutter-apk/app-release.apk',
-    'automationName': 'UiAutomator2'
+    'automationName': 'UiAutomator2',  # Add the missing comma here
     'appPackage': 'com.example.loginapp',  # Replace with your app's package name
     'appActivity': '.MainActivity',  # Replace with your app's main activity
     'autoGrantPermissions': True,
@@ -18,8 +18,6 @@ server_url = "http://127.0.0.1:4723/wd/hub"
 
 # Initialize the Appium driver with desired capabilities
 driver = webdriver.Remote(url=server_url, desired_capabilities=desired_caps)
-
-
 
 # Wait for the app to launch
 sleep(5)
