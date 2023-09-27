@@ -123,5 +123,6 @@ jobs:
   #   displayName: 'Run Appium Tests'
   - script: |
       pip install Appium-Python-Client
+      appium &
 
 
