@@ -14,7 +14,7 @@ desired_caps = {
 }
 
 # Appium server URL
-server_url = "http://127.0.0.1:4723/wd/hub"
+server_url = 'http://localhost:4723/wd/hub'
 
 # Initialize the Appium driver with desired capabilities
 driver = webdriver.Remote(url=server_url, desired_capabilities=desired_caps)
