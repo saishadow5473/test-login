@@ -17,8 +17,6 @@ jobs:
     displayName: 'Install Dependencies'
   - script: flutter build apk
     displayName: 'Build apk'
-  # - script: flutter test 
-  #   displayName: 'Run Tests'
   - task: CopyFiles@2
     inputs:
       SourceFolder: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk'
@@ -31,7 +29,6 @@ jobs:
       ArtifactName: 'apk'
       publishLocation: 'Container'
     displayName: 'Publish Artifacts'
-
 
   - script: |
       sudo apt-get update -y
@@ -78,12 +75,10 @@ jobs:
       $ANDROID_HOME/tools/bin/sdkmanager --list
 
       # Start the Android emulator in the background and log the output
-      # $ANDROID_HOME/emulator/emulator -avd "mytempavd" -no-audio -no-window -logcat /tmp/emulator.log &
       $ANDROID_HOME/emulator/emulator -avd mytempavd 
 
       # Wait for a short time (e.g., 5 minutes) to allow the emulator to start (you can adjust this duration)
       sleep 150
-    
 
       # Check if the emulator is running
       # if $ANDROID_HOME/platform-tools/adb devices | grep -q emulator; then
@@ -95,5 +90,33 @@ jobs:
       # List connected devices
       # $ANDROID_HOME/platform-tools/adb devices 
       $ANDROID_HOME/tools/emulator -list-avds
-      
     displayName: 'Install Android SDK and Run Emulator'
+
+  - script: |
+      # Install Node.js (if not already installed)
+      sudo apt-get install -y nodejs
+
+      # Install Appium globally
+      npm install -g appium
+      appium --port 4725 &
+      # Install the uiautomator2 driver
+      appium driver install uiautomator2
+      # Specify the Appium driver to use (uiautomator2)
+      # appium --use-driver=uiautomator2
+      npm update -g appium
+      npm update -g appium-uiautomator2-driver
+
+      # # Start the Appium server in the background
+      # appium &
+    displayName: 'Install and Start Appium Server'
+
+  # - script: |
+  #     # Navigate to your Appium test script directory
+  #     cd $(Build.SourcesDirectory)
+
+  #     # Install Appium-Python-Client
+  #     python -m pip install Appium-Python-Client
+
+  #     # Run your Appium test script
+  #     python appium_test.py --port 4725
+  #   displayName: 'Run Appium Tests'
