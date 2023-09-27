@@ -5,8 +5,12 @@ from time import sleep
 desired_caps = {
     'platformName': 'Android',
     'deviceName': 'mytempavd',  # Replace with your target device name
-    'app': '/home/vsts/work/1/s/build/app/outputs/flutter-apk/app-release.apk',
+    # 'app': '/home/vsts/work/1/s/build/app/outputs/flutter-apk/app-release.apk',
     'automationName': 'UiAutomator2'
+    'appPackage': 'com.example.loginapp',  # Replace with your app's package name
+    'appActivity': '.MainActivity',  # Replace with your app's main activity
+    'autoGrantPermissions': True,
+    'autoAcceptAlerts': True,
 }
 
 # Appium server URL
