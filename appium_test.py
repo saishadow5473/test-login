@@ -6,7 +6,7 @@ from time import sleep
 desired_caps = {
     'platformName': 'Android',
     'deviceName': 'mytempavd',  # Replace with your target device name
-    'app': 'build/app/outputs/flutter-apk/app-release.apk',  # Replace with the path to your app APK file
+    'app': '/home/vsts/work/1/s/build/app/outputs/flutter-apk/app-release.apk'
     'automationName': 'UiAutomator2'
 }
 
