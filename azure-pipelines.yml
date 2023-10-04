@@ -14,6 +14,7 @@ jobs:
   - script: |
       flutter --disable-telemetry
       flutter packages get
+      flutter test
     displayName: 'Install Dependencies'
   - script: flutter build apk
     displayName: 'Build apk'
@@ -30,81 +31,65 @@ jobs:
       publishLocation: 'Container'
     displayName: 'Publish Artifacts'
 
-  - script: |
-      sudo apt-get update -y
-      sudo apt-get install ca-certificates -y
-      sudo apt-get install cpu-checker
-      egrep -c '(vmx|svm)' /proc/cpuinfo
-      kvm-ok
+  # - script: |
+  #     sudo apt-get update -y
+  #     sudo apt-get install ca-certificates -y
+  #     sudo apt-get install cpu-checker
+  #     egrep -c '(vmx|svm)' /proc/cpuinfo
+  #     kvm-ok
       
-      sudo apt-get install openjdk-8-jdk -y
-      export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
-      echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
-      export PATH=$JAVA_HOME/bin:$PATH
-      echo "PATH=$PATH" >> $GITHUB_ENV
+  #     sudo apt-get install openjdk-8-jdk -y
+  #     export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+  #     echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+  #     export PATH=$JAVA_HOME/bin:$PATH
+  #     echo "PATH=$PATH" >> $GITHUB_ENV
 
-      sudo apt install wget -y
-      wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
-      unzip sdk-tools-linux-3859397.zip -d android-sdk
-      mkdir -p platform-tools
-      wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
-      unzip platform-tools-latest-linux.zip -d platform-tools
+  #     sudo apt install wget -y
+  #     wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
+  #     unzip sdk-tools-linux-3859397.zip -d android-sdk
+  #     mkdir -p platform-tools
+  #     wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+  #     unzip platform-tools-latest-linux.zip -d platform-tools
 
-      sudo mv platform-tools/* android-sdk/
+  #     sudo mv platform-tools/* android-sdk/
 
-      export ANDROID_HOME=$PWD/android-sdk
-      export PATH=$PATH:$ANDROID_HOME/tools
-      export PATH=$PATH:$HOME/platform-tools
+  #     export ANDROID_HOME=$PWD/android-sdk
+  #     export PATH=$PATH:$ANDROID_HOME/tools
+  #     export PATH=$PATH:$HOME/platform-tools
 
-      yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-      $ANDROID_HOME/tools/bin/sdkmanager --list
-      $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-31"
+  #     yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+  #     $ANDROID_HOME/tools/bin/sdkmanager --list
+  #     $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-31"
 
-      # Replace 'system-images;android-30;google_apis;x86' with the correct package name
-      $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-31;google_apis;x86_64"
-      export ANDROID_SDK_ROOT=$ANDROID_HOME
+  #     # Replace 'system-images;android-30;google_apis;x86' with the correct package name
+  #     $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-31;google_apis;x86_64"
+  #     export ANDROID_SDK_ROOT=$ANDROID_HOME
 
-      # List available AVDs
-      $ANDROID_HOME/tools/bin/avdmanager list avd
+  #     # List available AVDs
+  #     $ANDROID_HOME/tools/bin/avdmanager list avd
 
-      $ANDROID_HOME/tools/emulator -list-avds
+  #     $ANDROID_HOME/tools/emulator -list-avds
 
-      # Create an Android Virtual Device (AVD)
-      echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --name "mytempavd" --package "system-images;android-31;google_apis;x86_64" --tag "google_apis" --force
+  #     # Create an Android Virtual Device (AVD)
+  #     echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --name "mytempavd" --package "system-images;android-31;google_apis;x86_64" --tag "google_apis" --force
 
-      $ANDROID_HOME/tools/bin/sdkmanager --list
+  #     $ANDROID_HOME/tools/bin/sdkmanager --list
 
-      # Start the Android emulator in the background and log the output
-      $ANDROID_HOME/emulator/emulator -avd mytempavd 
+  #     # Start the Android emulator in the background and log the output
+  #     $ANDROID_HOME/emulator/emulator -avd mytempavd 
 
-      # Wait for a short time (e.g., 5 minutes) to allow the emulator to start (you can adjust this duration)
-      sleep 150
+  #     # Wait for a short time (e.g., 5 minutes) to allow the emulator to start (you can adjust this duration)
+  #     sleep 150
 
-      # Check if the emulator is running
-      # if $ANDROID_HOME/platform-tools/adb devices | grep -q emulator; then
-      #   echo "Emulator is running."
-      # else
-      #   echo "Emulator is not running."
-      # fi
+  #     # Check if the emulator is running
+  #     # if $ANDROID_HOME/platform-tools/adb devices | grep -q emulator; then
+  #     #   echo "Emulator is running."
+  #     # else
+  #     #   echo "Emulator is not running."
+  #     # fi
 
-      # List connected devices
-      # $ANDROID_HOME/platform-tools/adb devices 
-      $ANDROID_HOME/tools/emulator -list-avds
-    displayName: 'Install Android SDK and Run Emulator'
+  #     # List connected devices
+  #     # $ANDROID_HOME/platform-tools/adb devices 
+  #     $ANDROID_HOME/tools/emulator -list-avds
+  #   displayName: 'Install Android SDK and Run Emulator'
 
-  - script: |
-      pip install Appium-Python-Client
-      appium &
-    displayName: 'Install and Start Appium Server'
-
-  - script: |
-      # Navigate to your Appium test script directory
-      cd $(Build.SourcesDirectory)
-
-      # Install Appium-Python-Client
-      pip install Appium-Python-Client
-      pip install selenium
-
-      # Run your Appium test script
-      python appium_test.py --port 4725
-    displayName: 'Run Appium Tests'
